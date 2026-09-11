@@ -192,15 +192,22 @@ document.querySelectorAll('.nav-item').forEach(item => {
 
 window.addEventListener('message', (event) => {
     const data = event.data;
+    if (!data || !data.action) return;
 
     if (data.action === 'open') {
         menu.classList.remove('hidden');
+        menu.style.display = 'flex';
     }
 
     if (data.action === 'close') {
         menu.classList.add('hidden');
+        menu.style.display = 'none';
     }
 });
+
+// No DUI o menu já começa visível
+menu.style.display = 'flex';
+
 
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
