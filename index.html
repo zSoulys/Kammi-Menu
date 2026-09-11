@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kammi</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="menu" class="menu-container hidden">
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="brand">
+                <img src="logo.png" alt="Kammi" class="brand-logo">
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-item active" data-category="jogador-local">
+                    <i class="fa-solid fa-user"></i>
+                    <span>Jogador Local</span>
+                </div>
+                <div class="nav-item" data-category="jogador">
+                    <i class="fa-solid fa-user"></i>
+                    <span>Jogador</span>
+                </div>
+                <div class="nav-item" data-category="armas">
+                    <i class="fa-solid fa-gun"></i>
+                    <span>Armas</span>
+                </div>
+                <div class="nav-item" data-category="online">
+                    <i class="fa-solid fa-globe"></i>
+                    <span>Online</span>
+                </div>
+                <div class="nav-item" data-category="veiculos">
+                    <i class="fa-solid fa-car"></i>
+                    <span>Veículos</span>
+                </div>
+                <div class="nav-item" data-category="players">
+                    <i class="fa-solid fa-users"></i>
+                    <span>Players</span>
+                </div>
+                <div class="nav-item" data-category="outros">
+                    <i class="fa-solid fa-ellipsis"></i>
+                    <span>Outros</span>
+                </div>
+                <div class="nav-item" data-category="cloud">
+                    <i class="fa-solid fa-cloud"></i>
+                    <span>Cloud</span>
+                </div>
+                <div class="nav-item" data-category="tools">
+                    <i class="fa-solid fa-wrench"></i>
+                    <span>Tools</span>
+                </div>
+                <div class="nav-item" data-category="statebags">
+                    <i class="fa-solid fa-code"></i>
+                    <span>Statebags</span>
+                </div>
+                <div class="nav-item" data-category="exploits">
+                    <i class="fa-solid fa-bug"></i>
+                    <span>Exploits</span>
+                </div>
+                <div class="nav-item" data-category="configs">
+                    <i class="fa-solid fa-gear"></i>
+                    <span>Configs</span>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- MAIN CONTENT (vazio por enquanto) -->
+        <main class="main-content">
+            <div class="content-header">
+                <span id="current-category">Jogador Local</span>
+            </div>
+            <div class="content-body" id="content-body">
+                <!-- Área vazia - nenhuma função ainda -->
+                <div class="empty-state">
+                    <i class="fa-solid fa-folder-open"></i>
+                    <p>Nenhuma função nesta categoria ainda.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
