@@ -1,35 +1,31 @@
-/* Kammi UI - transparência real no DUI (alpha no fundo, não opacity no container) */
-
-html {
-    background: transparent !important;
-    background-color: rgba(0, 0, 0, 0) !important;
+@font-face {
+    font-family: "Le Bistrot des Amoureux";
+    src: url("fonts/LeBistrotDesAmoureux.woff2") format("woff2"),
+         url("fonts/LeBistrotDesAmoureux.woff") format("woff"),
+         url("fonts/LeBistrotDesAmoureux.ttf") format("truetype");
+    font-weight: 400 700;
+    font-style: normal;
+    font-display: swap;
 }
 
-body {
-    width: 100vw;
-    height: 100vh;
+html, body {
+    width: 100%;
+    height: 100%;
     margin: 0;
     padding: 0;
     overflow: hidden;
-    cursor: default;
     background: transparent !important;
-    background-color: rgba(0, 0, 0, 0) !important;
+    cursor: default;
 }
 
 * {
     box-sizing: border-box;
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    font-family: "Le Bistrot des Amoureux", "Segoe UI", system-ui, sans-serif;
     user-select: none;
 }
 
-.hidden {
-    display: none !important;
-}
+.hidden { display: none !important; }
 
-/*
-  CRÍTICO: o container NÃO pode ter fundo opaco.
-  Se tiver, a sidebar transparente só revela esse fundo, não o jogo.
-*/
 .menu-container {
     position: absolute;
     top: 50%;
@@ -39,18 +35,13 @@ body {
     height: 568px;
     display: flex;
     background: transparent !important;
-    background-color: rgba(0, 0, 0, 0) !important;
-    border: none !important;
-    box-shadow: none !important;
+    border: none;
+    box-shadow: none;
     border-radius: 12px;
-    overflow: visible;
+    overflow: hidden;
 }
 
-/*
-  Sidebar: ~25% opacidade (75% transparente)
-  preto levemente acinzentado via rgba — SEM opacity no elemento
-  (opacity no elemento afetaria textos/ícones)
-*/
+/* Sidebar: 7% transparência = 93% opacidade */
 .sidebar {
     width: 200px;
     flex-shrink: 0;
@@ -58,23 +49,19 @@ body {
     flex-direction: column;
     padding: 12px 0;
     border-radius: 12px 0 0 12px;
-    /* 45% transparência = 55% opacidade */
-    background: rgba(28, 30, 34, 0.55) !important;
-    background-color: rgba(28, 30, 34, 0.55) !important;
-    border: 1px solid rgba(255, 255, 255, 0.07);
-    border-right: 1px solid rgba(255, 255, 255, 0.08);
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
+    background: rgba(28, 30, 34, 0.95) !important;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .brand {
     padding: 12px 14px 14px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     margin-bottom: 6px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: transparent !important;
+    background: transparent;
 }
 
 .brand-logo {
@@ -82,10 +69,6 @@ body {
     max-width: 160px;
     height: auto;
     object-fit: contain;
-    filter:
-        drop-shadow(0 0 6px rgba(255, 255, 255, 0.3))
-        drop-shadow(0 0 10px rgba(0, 200, 255, 0.2))
-        brightness(1.06);
 }
 
 .sidebar-nav {
@@ -95,24 +78,20 @@ body {
     padding: 0 8px;
     flex: 1;
     overflow-y: auto;
-    background: transparent !important;
+    background: transparent;
 }
 
 .nav-group-label {
-    color: rgba(255, 255, 255, 0.48);
+    color: rgba(255, 255, 255, 0.45);
     font-size: 10px;
-    font-weight: 500;
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.8px;
+    letter-spacing: 0.7px;
     padding: 12px 14px 6px;
     pointer-events: none;
-    background: transparent !important;
-    text-shadow: 0 0 8px rgba(255, 255, 255, 0.12);
 }
 
-.nav-group-label:first-child {
-    padding-top: 4px;
-}
+.nav-group-label:first-child { padding-top: 4px; }
 
 .nav-item {
     display: flex;
@@ -120,94 +99,88 @@ body {
     gap: 12px;
     padding: 10px 14px;
     border-radius: 8px;
-    color: #ffffff !important;
+    color: #e6e6e6;
     font-size: 13.5px;
-    font-weight: 300;
+    font-weight: 600;
     cursor: pointer;
-    transition: background 0.15s ease;
-    background: transparent !important;
-    text-shadow:
-        0 0 6px rgba(255, 255, 255, 0.22),
-        0 1px 2px rgba(0, 0, 0, 0.8);
-}
-
-.nav-item i {
-    width: 18px;
-    text-align: center;
-    font-size: 14px;
-    color: #ffffff !important;
-    font-weight: 300;
-    filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.3));
+    transition: background 0.12s ease;
+    background: transparent;
 }
 
 .nav-item span {
-    color: #ffffff !important;
-    font-weight: 300;
+    color: #e6e6e6;
+    font-weight: 600;
+}
+
+.nav-icon {
+    width: 18px;
+    height: 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: #e6e6e6;
+}
+
+.nav-icon svg {
+    width: 16px;
+    height: 16px;
+    display: block;
+    fill: currentColor;
 }
 
 .nav-item:hover {
-    background: rgba(255, 255, 255, 0.08) !important;
+    background: rgba(255, 255, 255, 0.07);
 }
 
 .nav-item.active {
-    background: rgba(255, 255, 255, 0.12) !important;
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.10);
 }
 
-.nav-item.active i {
-    filter: drop-shadow(0 0 6px rgba(0, 200, 255, 0.45));
+.nav-item.active .nav-icon {
+    color: #7adfff;
 }
 
-/* Área de conteúdo: semi-opaca (não precisa ver o jogo aqui) */
+/* Direita 100% opaca */
 .main-content {
     flex: 1;
     display: flex;
     flex-direction: column;
-    /* 100% opaco — cobre o jogo atrás */
     background: rgb(16, 17, 20) !important;
-    background-color: rgb(16, 17, 20) !important;
     border-radius: 0 12px 12px 0;
     border: 1px solid rgba(255, 255, 255, 0.06);
     border-left: none;
-    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
-    opacity: 1 !important;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.4);
 }
 
 .content-header {
     padding: 14px 22px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    color: #ffffff;
+    color: #e6e6e6;
     font-size: 15px;
-    font-weight: 400;
+    font-weight: 600;
     display: flex;
     align-items: center;
     cursor: grab;
-    background: transparent !important;
 }
 
-.content-header:active {
-    cursor: grabbing;
-}
+.content-header:active { cursor: grabbing; }
 
 .content-body {
     flex: 1;
     padding: 18px 20px;
     overflow-y: auto;
-    background: transparent !important;
 }
 
 .empty-state {
     height: 100%;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    color: rgba(255, 255, 255, 0.28);
-    gap: 12px;
+    color: rgba(255, 255, 255, 0.35);
+    font-size: 14px;
+    font-weight: 500;
 }
-
-.empty-state i { font-size: 42px; font-weight: 300; }
-.empty-state p { font-size: 14px; font-weight: 300; }
 
 .category-grid {
     display: grid;
@@ -217,7 +190,7 @@ body {
 }
 
 .panel {
-    background: rgba(20, 21, 24, 0.9);
+    background: rgb(18, 19, 22);
     border: 1px solid rgba(255, 255, 255, 0.06);
     border-radius: 10px;
     padding: 14px;
@@ -232,7 +205,7 @@ body {
     gap: 8px;
     color: #3b9eff;
     font-size: 13.5px;
-    font-weight: 400;
+    font-weight: 600;
     margin-bottom: 12px;
     padding-bottom: 8px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
@@ -251,38 +224,34 @@ body {
     align-items: center;
     justify-content: space-between;
     padding: 10px 12px;
-    background: rgba(24, 25, 28, 0.85);
+    background: rgb(22, 23, 26);
     border: 1px solid rgba(255, 255, 255, 0.06);
     border-radius: 7px;
-    color: #c8c8c8;
+    color: #d0d0d0;
     font-size: 12.5px;
-    font-weight: 300;
+    font-weight: 500;
     cursor: pointer;
-    transition: all 0.12s ease;
 }
 
 .action-btn:hover {
-    background: rgba(32, 34, 38, 0.95);
+    background: rgb(30, 32, 36);
     color: #fff;
 }
 
-.action-btn.primary { color: #3b9eff; }
-.action-btn.danger:hover {
-    border-color: #5a2020;
-    color: #ff6b6b;
-}
+.action-btn.primary { color: #3b9eff; font-weight: 600; }
+.action-btn.danger:hover { color: #ff6b6b; border-color: #5a2020; }
 
 .toggle-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 9px 12px;
-    background: rgba(24, 25, 28, 0.85);
+    background: rgb(22, 23, 26);
     border: 1px solid rgba(255, 255, 255, 0.06);
     border-radius: 7px;
-    color: #c8c8c8;
+    color: #d0d0d0;
     font-size: 12.5px;
-    font-weight: 300;
+    font-weight: 500;
     cursor: pointer;
 }
 
@@ -303,7 +272,7 @@ body {
 .sub-label {
     color: #666;
     font-size: 11px;
-    font-weight: 400;
+    font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin: 10px 0 6px 2px;
@@ -313,9 +282,7 @@ body {
 
 .content-body::-webkit-scrollbar,
 .panel-body::-webkit-scrollbar,
-.sidebar-nav::-webkit-scrollbar {
-    width: 5px;
-}
+.sidebar-nav::-webkit-scrollbar { width: 5px; }
 
 .content-body::-webkit-scrollbar-thumb,
 .panel-body::-webkit-scrollbar-thumb,
