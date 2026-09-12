@@ -23,7 +23,6 @@ const weaponToggles = {
 function renderEmpty() {
     return `
         <div class="empty-state">
-            <i class="fa-solid fa-folder-open"></i>
             <p>Nenhuma função nesta categoria ainda.</p>
         </div>
     `;
@@ -33,11 +32,11 @@ function renderArmas() {
     return `
         <div class="category-grid">
             <div class="panel">
-                <div class="panel-title"><i class="fa-solid fa-gun"></i> Dar Arma</div>
+                <div class="panel-title">Dar Arma</div>
                 <div class="panel-body">
                     <div class="sub-label">Ações Rápidas</div>
-                    <div class="action-btn primary" data-waction="giveAll"><span>Dar Todas as Armas</span><i class="fa-solid fa-plus"></i></div>
-                    <div class="action-btn danger" data-waction="removeAll"><span>Remover Todas as Armas</span><i class="fa-solid fa-trash"></i></div>
+                    <div class="action-btn primary" data-waction="giveAll"><span>Dar Todas as Armas</span></div>
+                    <div class="action-btn danger" data-waction="removeAll"><span>Remover Todas as Armas</span></div>
                     <div class="sub-label">Pistolas</div>
                     <div class="action-btn" data-waction="give" data-weapon="WEAPON_PISTOL">Pistola</div>
                     <div class="action-btn" data-waction="give" data-weapon="WEAPON_COMBATPISTOL">Combat Pistol</div>
@@ -58,14 +57,14 @@ function renderArmas() {
                 </div>
             </div>
             <div class="panel">
-                <div class="panel-title"><i class="fa-solid fa-sliders"></i> Modificadores</div>
+                <div class="panel-title">Modificadores</div>
                 <div class="panel-body">
                     <div class="toggle-row" data-wtoggle="infiniteAmmo"><span>Munição Infinita</span><div class="toggle-check" id="toggle-infiniteAmmo"></div></div>
                     <div class="toggle-row" data-wtoggle="infiniteAmmoClip"><span>Clip Infinito</span><div class="toggle-check" id="toggle-infiniteAmmoClip"></div></div>
                     <div class="toggle-row" data-wtoggle="noReload"><span>Sem Recarregar</span><div class="toggle-check" id="toggle-noReload"></div></div>
                     <div class="sub-label">Extras</div>
-                    <div class="action-btn" data-waction="refillAmmo"><span>Recarregar Munição Atual</span><i class="fa-solid fa-rotate"></i></div>
-                    <div class="action-btn" data-waction="giveMaxAmmo"><span>Munição Máxima em Todas</span><i class="fa-solid fa-boxes-stacked"></i></div>
+                    <div class="action-btn" data-waction="refillAmmo"><span>Recarregar Munição Atual</span></div>
+                    <div class="action-btn" data-waction="giveMaxAmmo"><span>Munição Máxima em Todas</span></div>
                 </div>
             </div>
         </div>
