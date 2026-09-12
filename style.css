@@ -1,28 +1,35 @@
-html, body {
-    background: transparent !important;
-}
+/* Kammi UI - transparência real no DUI (alpha no fundo, não opacity no container) */
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    user-select: none;
+html {
+    background: transparent !important;
+    background-color: rgba(0, 0, 0, 0) !important;
 }
 
 body {
     width: 100vw;
     height: 100vh;
-    background: transparent !important;
+    margin: 0;
+    padding: 0;
     overflow: hidden;
     cursor: default;
+    background: transparent !important;
+    background-color: rgba(0, 0, 0, 0) !important;
+}
+
+* {
+    box-sizing: border-box;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    user-select: none;
 }
 
 .hidden {
     display: none !important;
 }
 
-/* Container transparente — senão a sidebar não mostra o jogo atrás */
+/*
+  CRÍTICO: o container NÃO pode ter fundo opaco.
+  Se tiver, a sidebar transparente só revela esse fundo, não o jogo.
+*/
 .menu-container {
     position: absolute;
     top: 50%;
@@ -30,26 +37,35 @@ body {
     transform: translate(-50%, -50%);
     width: 850px;
     height: 568px;
-    background: transparent !important;
-    border-radius: 12px;
     display: flex;
-    box-shadow: none;
-    border: none;
-    overflow: hidden;
+    background: transparent !important;
+    background-color: rgba(0, 0, 0, 0) !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 12px;
+    overflow: visible;
 }
 
-/* ========== SIDEBAR: 25% opacidade, preto acinzentado ========== */
+/*
+  Sidebar: ~25% opacidade (75% transparente)
+  preto levemente acinzentado via rgba — SEM opacity no elemento
+  (opacity no elemento afetaria textos/ícones)
+*/
 .sidebar {
     width: 200px;
-    /* preto levemente acinzentado @ 25% opacidade = 75% transparente */
-    background: rgba(22, 24, 28, 0.25) !important;
-    border-right: 1px solid rgba(255, 255, 255, 0.06);
+    flex-shrink: 0;
     display: flex;
     flex-direction: column;
     padding: 12px 0;
     border-radius: 12px 0 0 12px;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    /* 0.25 = 25% visível / 75% transparente */
+    background: rgba(28, 30, 34, 0.25) !important;
+    background-color: rgba(28, 30, 34, 0.25) !important;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-right: 1px solid rgba(255, 255, 255, 0.06);
+    /* backdrop-filter costuma falhar/opacar no CEF do DUI — desativado de propósito */
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
 }
 
 .brand {
@@ -59,7 +75,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: transparent;
+    background: transparent !important;
 }
 
 .brand-logo {
@@ -68,9 +84,9 @@ body {
     height: auto;
     object-fit: contain;
     filter:
-        drop-shadow(0 0 6px rgba(255, 255, 255, 0.35))
-        drop-shadow(0 0 12px rgba(0, 200, 255, 0.25))
-        brightness(1.08);
+        drop-shadow(0 0 6px rgba(255, 255, 255, 0.3))
+        drop-shadow(0 0 10px rgba(0, 200, 255, 0.2))
+        brightness(1.06);
 }
 
 .sidebar-nav {
@@ -80,27 +96,25 @@ body {
     padding: 0 8px;
     flex: 1;
     overflow-y: auto;
-    background: transparent;
+    background: transparent !important;
 }
 
-/* Rótulos de grupo */
 .nav-group-label {
-    color: rgba(255, 255, 255, 0.50);
+    color: rgba(255, 255, 255, 0.48);
     font-size: 10px;
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.8px;
     padding: 12px 14px 6px;
     pointer-events: none;
-    cursor: default;
-    text-shadow: 0 0 8px rgba(255, 255, 255, 0.15);
+    background: transparent !important;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.12);
 }
 
 .nav-group-label:first-child {
     padding-top: 4px;
 }
 
-/* Categorias: branco puro + brilho sutil */
 .nav-item {
     display: flex;
     align-items: center;
@@ -111,11 +125,11 @@ body {
     font-size: 13.5px;
     font-weight: 300;
     cursor: pointer;
-    transition: all 0.15s ease;
-    background: transparent;
+    transition: background 0.15s ease;
+    background: transparent !important;
     text-shadow:
-        0 0 6px rgba(255, 255, 255, 0.25),
-        0 1px 2px rgba(0, 0, 0, 0.75);
+        0 0 6px rgba(255, 255, 255, 0.22),
+        0 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 .nav-item i {
@@ -123,51 +137,38 @@ body {
     text-align: center;
     font-size: 14px;
     color: #ffffff !important;
-    filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.35));
+    font-weight: 300;
+    filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.3));
 }
 
 .nav-item span {
     color: #ffffff !important;
+    font-weight: 300;
 }
 
 .nav-item:hover {
-    background: rgba(255, 255, 255, 0.08);
-    color: #ffffff !important;
-}
-
-.nav-item:hover i,
-.nav-item:hover span {
-    color: #ffffff !important;
+    background: rgba(255, 255, 255, 0.08) !important;
 }
 
 .nav-item.active {
-    background: rgba(255, 255, 255, 0.12);
-    color: #ffffff !important;
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.12) !important;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
 }
 
 .nav-item.active i {
-    color: #ffffff !important;
-    filter: drop-shadow(0 0 6px rgba(0, 200, 255, 0.5));
+    filter: drop-shadow(0 0 6px rgba(0, 200, 255, 0.45));
 }
 
-.nav-item.active span {
-    color: #ffffff !important;
-    text-shadow:
-        0 0 8px rgba(0, 200, 255, 0.35),
-        0 0 6px rgba(255, 255, 255, 0.2);
-}
-
-/* ========== MAIN (opaco — conteúdo legível) ========== */
+/* Área de conteúdo: semi-opaca (não precisa ver o jogo aqui) */
 .main-content {
     flex: 1;
     display: flex;
     flex-direction: column;
-    background: rgba(16, 17, 20, 0.94);
+    background: rgba(18, 19, 22, 0.92) !important;
     border-radius: 0 12px 12px 0;
     border: 1px solid rgba(255, 255, 255, 0.06);
     border-left: none;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.4);
 }
 
 .content-header {
@@ -179,6 +180,7 @@ body {
     display: flex;
     align-items: center;
     cursor: grab;
+    background: transparent !important;
 }
 
 .content-header:active {
@@ -189,6 +191,7 @@ body {
     flex: 1;
     padding: 18px 20px;
     overflow-y: auto;
+    background: transparent !important;
 }
 
 .empty-state {
@@ -197,12 +200,12 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    color: rgba(255, 255, 255, 0.25);
+    color: rgba(255, 255, 255, 0.28);
     gap: 12px;
 }
 
-.empty-state i { font-size: 42px; }
-.empty-state p { font-size: 14px; }
+.empty-state i { font-size: 42px; font-weight: 300; }
+.empty-state p { font-size: 14px; font-weight: 300; }
 
 .category-grid {
     display: grid;
@@ -212,7 +215,7 @@ body {
 }
 
 .panel {
-    background: rgba(18, 19, 22, 0.95);
+    background: rgba(20, 21, 24, 0.9);
     border: 1px solid rgba(255, 255, 255, 0.06);
     border-radius: 10px;
     padding: 14px;
@@ -246,17 +249,18 @@ body {
     align-items: center;
     justify-content: space-between;
     padding: 10px 12px;
-    background: rgba(22, 23, 26, 0.9);
+    background: rgba(24, 25, 28, 0.85);
     border: 1px solid rgba(255, 255, 255, 0.06);
     border-radius: 7px;
     color: #c8c8c8;
     font-size: 12.5px;
+    font-weight: 300;
     cursor: pointer;
     transition: all 0.12s ease;
 }
 
 .action-btn:hover {
-    background: rgba(30, 32, 36, 0.95);
+    background: rgba(32, 34, 38, 0.95);
     color: #fff;
 }
 
@@ -271,11 +275,12 @@ body {
     align-items: center;
     justify-content: space-between;
     padding: 9px 12px;
-    background: rgba(22, 23, 26, 0.9);
+    background: rgba(24, 25, 28, 0.85);
     border: 1px solid rgba(255, 255, 255, 0.06);
     border-radius: 7px;
     color: #c8c8c8;
     font-size: 12.5px;
+    font-weight: 300;
     cursor: pointer;
 }
 
@@ -291,16 +296,6 @@ body {
 .toggle-check.active {
     background: #3b9eff;
     border-color: #3b9eff;
-}
-
-.toggle-check.active::after {
-    content: '✓';
-    color: #fff;
-    font-size: 11px;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 .sub-label {
@@ -323,6 +318,6 @@ body {
 .content-body::-webkit-scrollbar-thumb,
 .panel-body::-webkit-scrollbar-thumb,
 .sidebar-nav::-webkit-scrollbar-thumb {
-    background: #2a2a2a;
+    background: rgba(255, 255, 255, 0.12);
     border-radius: 3px;
 }
