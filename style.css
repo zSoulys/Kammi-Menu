@@ -1,3 +1,7 @@
+html, body {
+    background: transparent !important;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -83,7 +87,7 @@ body {
 .nav-group-label {
     color: rgba(255, 255, 255, 0.50);
     font-size: 10px;
-    font-weight: 700;
+    font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.8px;
     padding: 12px 14px 6px;
@@ -105,7 +109,7 @@ body {
     border-radius: 8px;
     color: #ffffff !important;
     font-size: 13.5px;
-    font-weight: 500;
+    font-weight: 300;
     cursor: pointer;
     transition: all 0.15s ease;
     background: transparent;
@@ -171,7 +175,7 @@ body {
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     color: #ffffff;
     font-size: 15px;
-    font-weight: 600;
+    font-weight: 400;
     display: flex;
     align-items: center;
     cursor: grab;
@@ -223,7 +227,7 @@ body {
     gap: 8px;
     color: #3b9eff;
     font-size: 13.5px;
-    font-weight: 600;
+    font-weight: 400;
     margin-bottom: 12px;
     padding-bottom: 8px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
@@ -302,7 +306,7 @@ body {
 .sub-label {
     color: #666;
     font-size: 11px;
-    font-weight: 600;
+    font-weight: 400;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin: 10px 0 6px 2px;
