@@ -180,15 +180,31 @@ function loadCategory(category) {
     }
 }
 
-document.querySelectorAll('.nav-item').forEach(item => {
-    item.addEventListener('click', () => {
-        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-        item.classList.add('active');
-        loadCategory(item.dataset.category);
-    });
-});
+// Clique nas categorias (click + mousedown para DUI)
+function bindCategoryClicks() {
+    var nav = document.querySelector('.sidebar-nav');
+    if (!nav) return;
 
-// ========== NUI MESSAGES ==========
+    function onSelect(e) {
+        var item = e.target.closest('.nav-item');
+        if (!item) return;
+        e.preventDefault();
+        e.stopPropagation();
+
+        document.querySelectorAll('.nav-item').forEach(function (i) {
+            i.classList.remove('active');
+        });
+        item.classList.add('active');
+        loadCategory(item.getAttribute('data-category'));
+    }
+
+    nav.addEventListener('click', onSelect);
+    nav.addEventListener('mousedown', onSelect);
+}
+
+bindCategoryClicks();
+
+// ========== NUI / DUI MESSAGES ==========
 
 window.addEventListener('message', (event) => {
     const data = event.data;
@@ -205,44 +221,13 @@ window.addEventListener('message', (event) => {
     }
 });
 
-// No DUI o menu já começa visível
+// DUI: menu começa visível
 menu.style.display = 'flex';
-
-// Botões mover / expand (modo arrastar - o Lua também arrasta pela barra superior)
-setTimeout(function () {
-    var btnMove = document.getElementById('btn-move');
-    var btnExpand = document.getElementById('btn-expand');
-
-    function toggleMoveMode() {
-        if (btnMove) btnMove.classList.toggle('active');
-        if (btnExpand) btnExpand.classList.toggle('active', btnMove && btnMove.classList.contains('active'));
-    }
-
-    if (btnMove) btnMove.addEventListener('click', function (e) {
-        e.stopPropagation();
-        toggleMoveMode();
-    });
-    if (btnExpand) btnExpand.addEventListener('click', function (e) {
-        e.stopPropagation();
-        toggleMoveMode();
-    });
-}, 100);
-
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-        menu.classList.add('hidden');
-        fetch(`https://${GetParentResourceName()}/close`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({})
-        }).catch(() => {});
-    }
-});
 
 function GetParentResourceName() {
     try {
         return window.GetParentResourceName();
     } catch (e) {
-        return 'shark_menu';
+        return 'kammi_menu';
     }
 }
