@@ -9,17 +9,14 @@
 </head>
 <body>
     <div id="menu" class="menu-container">
-        <!-- SIDEBAR -->
         <aside class="sidebar">
             <div class="brand">
                 <img src="logo.png" alt="Kammi" class="brand-logo">
             </div>
+
             <nav class="sidebar-nav">
-                <div class="nav-item active" data-category="jogador-local">
-                    <i class="fa-solid fa-user"></i>
-                    <span>Jogador Local</span>
-                </div>
-                <div class="nav-item" data-category="jogador">
+                <div class="nav-group-label">Jogador Local</div>
+                <div class="nav-item active" data-category="jogador">
                     <i class="fa-solid fa-user"></i>
                     <span>Jogador</span>
                 </div>
@@ -27,10 +24,8 @@
                     <i class="fa-solid fa-gun"></i>
                     <span>Armas</span>
                 </div>
-                <div class="nav-item" data-category="online">
-                    <i class="fa-solid fa-globe"></i>
-                    <span>Online</span>
-                </div>
+
+                <div class="nav-group-label">Online</div>
                 <div class="nav-item" data-category="veiculos">
                     <i class="fa-solid fa-car"></i>
                     <span>Veículos</span>
@@ -39,10 +34,8 @@
                     <i class="fa-solid fa-users"></i>
                     <span>Players</span>
                 </div>
-                <div class="nav-item" data-category="outros">
-                    <i class="fa-solid fa-ellipsis"></i>
-                    <span>Outros</span>
-                </div>
+
+                <div class="nav-group-label">Outros</div>
                 <div class="nav-item" data-category="cloud">
                     <i class="fa-solid fa-cloud"></i>
                     <span>Cloud</span>
@@ -66,13 +59,11 @@
             </nav>
         </aside>
 
-        <!-- MAIN CONTENT (vazio por enquanto) -->
         <main class="main-content">
             <div class="content-header" id="title-bar">
-                <span id="current-category">Jogador Local</span>
+                <span id="current-category">Jogador</span>
             </div>
             <div class="content-body" id="content-body">
-                <!-- Área vazia - nenhuma função ainda -->
                 <div class="empty-state">
                     <i class="fa-solid fa-folder-open"></i>
                     <p>Nenhuma função nesta categoria ainda.</p>
