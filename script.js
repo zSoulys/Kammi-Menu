@@ -1,282 +1,146 @@
-html, body {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background: transparent !important;
-    cursor: default;
+const menu = document.getElementById('menu');
+const contentBody = document.getElementById('content-body');
+const currentCategoryLabel = document.getElementById('current-category');
+
+const categoryNames = {
+    jogador: 'Jogador',
+    armas: 'Armas',
+    veiculos: 'Veículos',
+    players: 'Players',
+    cloud: 'Cloud',
+    tools: 'Tools',
+    statebags: 'Statebags',
+    exploits: 'Exploits',
+    configs: 'Configs'
+};
+
+const weaponToggles = {
+    infiniteAmmo: false,
+    noReload: false,
+    infiniteAmmoClip: false
+};
+
+function renderEmpty() {
+    return `
+        <div class="empty-state">
+            <p>Nenhuma função nesta categoria ainda.</p>
+        </div>
+    `;
 }
 
-* {
-    box-sizing: border-box;
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    user-select: none;
+function renderArmas() {
+    return `
+        <div class="category-grid">
+            <div class="panel">
+                <div class="panel-title">Dar Arma</div>
+                <div class="panel-body">
+                    <div class="sub-label">Ações Rápidas</div>
+                    <div class="action-btn primary" data-waction="giveAll"><span>Dar Todas as Armas</span></div>
+                    <div class="action-btn danger" data-waction="removeAll"><span>Remover Todas as Armas</span></div>
+                    <div class="sub-label">Pistolas</div>
+                    <div class="action-btn" data-waction="give" data-weapon="WEAPON_PISTOL">Pistola</div>
+                    <div class="action-btn" data-waction="give" data-weapon="WEAPON_COMBATPISTOL">Combat Pistol</div>
+                    <div class="action-btn" data-waction="give" data-weapon="WEAPON_APPISTOL">AP Pistol</div>
+                    <div class="action-btn" data-waction="give" data-weapon="WEAPON_PISTOL50">Pistol .50</div>
+                    <div class="action-btn" data-waction="give" data-weapon="WEAPON_HEAVYPISTOL">Heavy Pistol</div>
+                    <div class="sub-label">SMGs</div>
+                    <div class="action-btn" data-waction="give" data-weapon="WEAPON_MICROSMG">Micro SMG</div>
+                    <div class="action-btn" data-waction="give" data-weapon="WEAPON_SMG">SMG</div>
+                    <div class="action-btn" data-waction="give" data-weapon="WEAPON_ASSAULTSMG">Assault SMG</div>
+                    <div class="sub-label">Rifles</div>
+                    <div class="action-btn" data-waction="give" data-weapon="WEAPON_ASSAULTRIFLE">Assault Rifle</div>
+                    <div class="action-btn" data-waction="give" data-weapon="WEAPON_CARBINERIFLE">Carbine Rifle</div>
+                    <div class="action-btn" data-waction="give" data-weapon="WEAPON_SPECIALCARBINE">Special Carbine</div>
+                    <div class="sub-label">Pesadas</div>
+                    <div class="action-btn" data-waction="give" data-weapon="WEAPON_RPG">RPG</div>
+                    <div class="action-btn" data-waction="give" data-weapon="WEAPON_MINIGUN">Minigun</div>
+                </div>
+            </div>
+            <div class="panel">
+                <div class="panel-title">Modificadores</div>
+                <div class="panel-body">
+                    <div class="toggle-row" data-wtoggle="infiniteAmmo"><span>Munição Infinita</span><div class="toggle-check" id="toggle-infiniteAmmo"></div></div>
+                    <div class="toggle-row" data-wtoggle="infiniteAmmoClip"><span>Clip Infinito</span><div class="toggle-check" id="toggle-infiniteAmmoClip"></div></div>
+                    <div class="toggle-row" data-wtoggle="noReload"><span>Sem Recarregar</span><div class="toggle-check" id="toggle-noReload"></div></div>
+                    <div class="sub-label">Extras</div>
+                    <div class="action-btn" data-waction="refillAmmo"><span>Recarregar Munição Atual</span></div>
+                    <div class="action-btn" data-waction="giveMaxAmmo"><span>Munição Máxima em Todas</span></div>
+                </div>
+            </div>
+        </div>
+    `;
 }
 
-.hidden { display: none !important; }
-
-.menu-container {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 850px;
-    height: 568px;
-    display: flex;
-    background: transparent !important;
-    border: none;
-    box-shadow: none;
-    border-radius: 12px;
-    overflow: hidden;
+function loadCategory(category) {
+    currentCategoryLabel.textContent = categoryNames[category] || category;
+    if (category === 'armas') {
+        contentBody.innerHTML = renderArmas();
+        bindWeaponButtons();
+    } else {
+        contentBody.innerHTML = renderEmpty();
+    }
 }
 
-/* Sidebar: 7% transparência = 93% opacidade */
-.sidebar {
-    width: 200px;
-    flex-shrink: 0;
-    display: flex;
-    flex-direction: column;
-    padding: 12px 0;
-    border-radius: 12px 0 0 12px;
-    background: rgba(24, 26, 30, 0.93) !important;
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    border-right: 1px solid rgba(255, 255, 255, 0.05);
+function bindWeaponButtons() {
+    contentBody.querySelectorAll('[data-waction]').forEach(function (btn) {
+        btn.addEventListener('mousedown', function (e) {
+            e.stopPropagation();
+            window.__kammiLastAction = {
+                type: 'weapon',
+                action: btn.getAttribute('data-waction'),
+                weapon: btn.getAttribute('data-weapon') || null
+            };
+        });
+    });
+    contentBody.querySelectorAll('[data-wtoggle]').forEach(function (row) {
+        row.addEventListener('mousedown', function (e) {
+            e.stopPropagation();
+            var opt = row.getAttribute('data-wtoggle');
+            weaponToggles[opt] = !weaponToggles[opt];
+            var el = document.getElementById('toggle-' + opt);
+            if (el) el.classList.toggle('active', weaponToggles[opt]);
+            window.__kammiLastAction = {
+                type: 'weaponToggle',
+                option: opt,
+                enabled: weaponToggles[opt]
+            };
+        });
+    });
 }
 
-.brand {
-    padding: 12px 14px 14px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    margin-bottom: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: transparent;
+function bindCategoryClicks() {
+    var nav = document.querySelector('.sidebar-nav');
+    if (!nav) return;
+
+    function onSelect(e) {
+        var item = e.target.closest('.nav-item');
+        if (!item) return;
+        e.preventDefault();
+        e.stopPropagation();
+        document.querySelectorAll('.nav-item').forEach(function (i) {
+            i.classList.remove('active');
+        });
+        item.classList.add('active');
+        loadCategory(item.getAttribute('data-category'));
+    }
+
+    nav.addEventListener('click', onSelect);
+    nav.addEventListener('mousedown', onSelect);
 }
 
-.brand-logo {
-    width: 100%;
-    max-width: 160px;
-    height: auto;
-    object-fit: contain;
-}
+bindCategoryClicks();
 
-.sidebar-nav {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    padding: 0 8px;
-    flex: 1;
-    overflow-y: auto;
-    background: transparent;
-}
+window.addEventListener('message', function (event) {
+    var data = event.data;
+    if (!data || !data.action) return;
+    if (data.action === 'open') {
+        menu.classList.remove('hidden');
+        menu.style.display = 'flex';
+    }
+    if (data.action === 'close') {
+        menu.classList.add('hidden');
+        menu.style.display = 'none';
+    }
+});
 
-.nav-group-label {
-    color: rgba(255, 255, 255, 0.45);
-    font-size: 10px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.7px;
-    padding: 12px 14px 6px;
-    pointer-events: none;
-}
-
-.nav-group-label:first-child { padding-top: 4px; }
-
-.nav-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 10px 14px;
-    border-radius: 8px;
-    color: #ffffff;
-    font-size: 13.5px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.12s ease;
-    background: transparent;
-}
-
-.nav-item span {
-    color: #ffffff;
-    font-weight: 600;
-}
-
-.nav-icon {
-    width: 18px;
-    height: 18px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    color: #ffffff;
-}
-
-.nav-icon svg {
-    width: 16px;
-    height: 16px;
-    display: block;
-    fill: currentColor;
-}
-
-.nav-item:hover {
-    background: rgba(255, 255, 255, 0.07);
-}
-
-.nav-item.active {
-    background: rgba(255, 255, 255, 0.10);
-}
-
-.nav-item.active .nav-icon {
-    color: #7adfff;
-}
-
-/* Direita 100% opaca */
-.main-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    background: rgb(16, 17, 20) !important;
-    border-radius: 0 12px 12px 0;
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    border-left: none;
-    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.4);
-}
-
-.content-header {
-    padding: 14px 22px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    color: #ffffff;
-    font-size: 15px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    cursor: grab;
-}
-
-.content-header:active { cursor: grabbing; }
-
-.content-body {
-    flex: 1;
-    padding: 18px 20px;
-    overflow-y: auto;
-}
-
-.empty-state {
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: rgba(255, 255, 255, 0.35);
-    font-size: 14px;
-    font-weight: 500;
-}
-
-.category-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    height: 100%;
-}
-
-.panel {
-    background: rgb(18, 19, 22);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    border-radius: 10px;
-    padding: 14px;
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
-}
-
-.panel-title {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: #3b9eff;
-    font-size: 13.5px;
-    font-weight: 600;
-    margin-bottom: 12px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.panel-body {
-    flex: 1;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.action-btn {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 12px;
-    background: rgb(22, 23, 26);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    border-radius: 7px;
-    color: #d0d0d0;
-    font-size: 12.5px;
-    font-weight: 500;
-    cursor: pointer;
-}
-
-.action-btn:hover {
-    background: rgb(30, 32, 36);
-    color: #fff;
-}
-
-.action-btn.primary { color: #3b9eff; font-weight: 600; }
-.action-btn.danger:hover { color: #ff6b6b; border-color: #5a2020; }
-
-.toggle-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 9px 12px;
-    background: rgb(22, 23, 26);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    border-radius: 7px;
-    color: #d0d0d0;
-    font-size: 12.5px;
-    font-weight: 500;
-    cursor: pointer;
-}
-
-.toggle-check {
-    width: 16px;
-    height: 16px;
-    border: 1.5px solid #3a3a3a;
-    border-radius: 4px;
-    background: #0d0d0d;
-    flex-shrink: 0;
-}
-
-.toggle-check.active {
-    background: #3b9eff;
-    border-color: #3b9eff;
-}
-
-.sub-label {
-    color: #666;
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin: 10px 0 6px 2px;
-}
-
-.sub-label:first-child { margin-top: 0; }
-
-.content-body::-webkit-scrollbar,
-.panel-body::-webkit-scrollbar,
-.sidebar-nav::-webkit-scrollbar { width: 5px; }
-
-.content-body::-webkit-scrollbar-thumb,
-.panel-body::-webkit-scrollbar-thumb,
-.sidebar-nav::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.12);
-    border-radius: 3px;
-}
+menu.style.display = 'flex';
