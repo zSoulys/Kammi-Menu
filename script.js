@@ -208,6 +208,25 @@ window.addEventListener('message', (event) => {
 // No DUI o menu já começa visível
 menu.style.display = 'flex';
 
+// Botões mover / expand (modo arrastar - o Lua também arrasta pela barra superior)
+setTimeout(function () {
+    var btnMove = document.getElementById('btn-move');
+    var btnExpand = document.getElementById('btn-expand');
+
+    function toggleMoveMode() {
+        if (btnMove) btnMove.classList.toggle('active');
+        if (btnExpand) btnExpand.classList.toggle('active', btnMove && btnMove.classList.contains('active'));
+    }
+
+    if (btnMove) btnMove.addEventListener('click', function (e) {
+        e.stopPropagation();
+        toggleMoveMode();
+    });
+    if (btnExpand) btnExpand.addEventListener('click', function (e) {
+        e.stopPropagation();
+        toggleMoveMode();
+    });
+}, 100);
 
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
