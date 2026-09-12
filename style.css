@@ -11,6 +11,19 @@ body {
     height: 100vh;
     background: transparent;
     overflow: hidden;
+    cursor: default;
+}
+
+.menu-container,
+.menu-container * {
+    cursor: default;
+}
+
+.nav-item,
+.action-btn,
+.toggle-row,
+.icon-btn {
+    cursor: pointer;
 }
 
 .hidden {
