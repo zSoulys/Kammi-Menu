@@ -383,3 +383,67 @@ html, body {
 .nav-item.active span:not(.nav-icon) {
     color: #e8e8e8;
 }
+
+/* === v1.4.0 icons + selection (definitive) === */
+.nav-icon {
+    width: 20px !important;
+    height: 20px !important;
+    min-width: 20px;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: #3b9eff !important;
+}
+
+.nav-icon svg {
+    width: 16px !important;
+    height: 16px !important;
+    display: block;
+    fill: currentColor;
+}
+
+.nav-label {
+    color: #e0e0e0 !important;
+    font-weight: 600 !important;
+    font-size: 13.5px;
+}
+
+.nav-item {
+    position: relative !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    padding: 10px 14px 10px 16px !important;
+    border-radius: 8px !important;
+    background: transparent !important;
+    cursor: pointer;
+}
+
+.nav-item:hover {
+    background: rgba(255, 255, 255, 0.04) !important;
+}
+
+.nav-item.active {
+    background: #1a1c20 !important;
+    box-shadow: none !important;
+}
+
+.nav-item.active::before {
+    content: "" !important;
+    position: absolute !important;
+    left: 0 !important;
+    top: 7px !important;
+    bottom: 7px !important;
+    width: 3px !important;
+    border-radius: 0 3px 3px 0 !important;
+    background: #3b9eff !important;
+}
+
+.nav-item.active .nav-icon {
+    color: #3b9eff !important;
+}
+
+.nav-item.active .nav-label {
+    color: #f0f0f0 !important;
+}
