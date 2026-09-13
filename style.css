@@ -460,7 +460,7 @@ html, body {
     height: 18px !important;
     min-width: 18px !important;
     min-height: 18px !important;
-    color: #3ecbff !important;
+    color: #3b9eff !important;
     flex-shrink: 0 !important;
     overflow: visible !important;
 }
@@ -471,6 +471,15 @@ html, body {
     max-height: 18px !important;
     display: block !important;
     flex-shrink: 0 !important;
+    color: #3b9eff !important;
+    fill: currentColor;
+    stroke: currentColor;
+}
+.nav-icon svg[fill="none"] {
+    fill: none !important;
+}
+.nav-icon svg[fill="currentColor"] {
+    stroke: none !important;
 }
 .nav-item {
     display: flex !important;
