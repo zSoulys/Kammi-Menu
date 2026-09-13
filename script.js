@@ -5,6 +5,7 @@ const currentCategoryLabel = document.getElementById('current-category');
 const categoryNames = {
     jogador: 'Jogador',
     visual: 'Visual',
+    aim: 'Aim',
     armas: 'Armas',
     veiculos: 'Veículos',
     players: 'Players',
@@ -32,6 +33,50 @@ const espToggles = {
 };
 
 let espDistance = 500;
+
+const aimToggles = {
+    trainingOverlay: false,
+    showFov: false,
+    targetMarker: false,
+    visibleCheck: false,
+    excludeDeads: true,
+    trainingNpcs: false,
+    showFovCircle: true,
+    showMarkers: true,
+    showLines: false
+};
+
+const aimSettings = {
+    trainingFov: 50,
+    smoothingPreview: 10,
+    circleThickness: 2,
+    circleAlpha: 120,
+    fovColor: '#00c8ff'
+};
+
+let aimSub = 'training'; // training | visual
+
+function nuiPost(eventName, data) {
+    var payload = JSON.stringify(data || {});
+    try {
+        fetch('https://' + GetParentResourceName() + '/' + eventName, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json; charset=UTF-8' },
+            body: payload
+        }).catch(function () {});
+    } catch (e) {}
+    window.__kammiLastAction = Object.assign({ type: eventName }, data || {});
+}
+
+function GetParentResourceName() {
+    try {
+        if (typeof window.GetParentResourceName === 'function') {
+            return window.GetParentResourceName();
+        }
+    } catch (e) {}
+    return 'kammi_menu';
+}
+
 
 function renderEmpty() {
     return `
@@ -109,11 +154,7 @@ function bindEspControls() {
             espToggles[opt] = !espToggles[opt];
             var el = document.getElementById('toggle-' + opt);
             if (el) el.classList.toggle('active', espToggles[opt]);
-            window.__kammiLastAction = {
-                type: 'espToggle',
-                option: opt,
-                enabled: espToggles[opt]
-            };
+            nuiPost('espToggle', { option: opt, enabled: espToggles[opt] });
         });
     });
 
@@ -129,11 +170,7 @@ function bindEspControls() {
             espDistance = parseInt(slider.value, 10) || 1;
             if (valDisplay) valDisplay.textContent = String(espDistance);
             syncSliderTrack(slider);
-            window.__kammiLastAction = {
-                type: 'espSetting',
-                option: 'distance',
-                value: espDistance
-            };
+            nuiPost('espSetting', { option: 'distance', value: espDistance });
         });
         slider.addEventListener('mousedown', function (e) { e.stopPropagation(); });
         slider.addEventListener('click', function (e) { e.stopPropagation(); });
@@ -187,12 +224,169 @@ function renderArmas() {
     `;
 }
 
+
+function renderSubnav(category) {
+    var subnav = document.getElementById('subnav');
+    if (!subnav) return;
+    if (category === 'aim') {
+        subnav.classList.remove('is-hidden');
+        subnav.innerHTML = `
+            <button type="button" class="subnav-btn ${aimSub === 'training' ? 'active' : ''}" data-sub="training">Training</button>
+            <button type="button" class="subnav-btn ${aimSub === 'visual' ? 'active' : ''}" data-sub="visual">Visual</button>
+        `;
+        subnav.querySelectorAll('.subnav-btn').forEach(function (btn) {
+            btn.addEventListener('mousedown', function (e) {
+                e.stopPropagation();
+                aimSub = btn.getAttribute('data-sub');
+                loadCategory('aim');
+            });
+        });
+    } else {
+        subnav.classList.add('is-hidden');
+        subnav.innerHTML = '';
+    }
+}
+
+function checkMarkHtml() {
+    return '<span class="check-mark" aria-hidden="true"><svg viewBox="0 0 12 12" width="10" height="10"><path fill="currentColor" d="M4.5 9.2L1.6 6.3l1.1-1.1 1.8 1.8 4.2-4.2 1.1 1.1z"/></svg></span>';
+}
+
+function renderAim() {
+    if (aimSub === 'visual') {
+        return `
+        <div class="category-grid compact">
+            <div class="panel">
+                <div class="panel-title">Aim Visual</div>
+                <div class="panel-body">
+                    <div class="toggle-row" data-aimtoggle="showFovCircle"><span>Exibir círculo FOV</span><div class="toggle-check ${aimToggles.showFovCircle ? 'active' : ''}" id="toggle-showFovCircle">${checkMarkHtml()}</div></div>
+                    <div class="toggle-row" data-aimtoggle="showMarkers"><span>Marcadores de treino</span><div class="toggle-check ${aimToggles.showMarkers ? 'active' : ''}" id="toggle-showMarkers">${checkMarkHtml()}</div></div>
+                    <div class="toggle-row" data-aimtoggle="showLines"><span>Linhas / indicadores</span><div class="toggle-check ${aimToggles.showLines ? 'active' : ''}" id="toggle-showLines">${checkMarkHtml()}</div></div>
+                    <div class="sub-label">Cor do círculo</div>
+                    <div class="color-row">
+                        <input type="color" id="aim-fov-color" class="color-input" value="${aimSettings.fovColor}" />
+                        <span class="color-label">FOV Color</span>
+                    </div>
+                    <div class="sub-label">Transparência</div>
+                    <div class="esp-slider-wrap">
+                        <input type="range" id="aim-alpha-slider" class="esp-slider" min="20" max="255" value="${aimSettings.circleAlpha}" step="1" />
+                        <div class="esp-slider-value-row">
+                            <span class="esp-slider-label">20</span>
+                            <span class="esp-slider-value" id="aim-alpha-val">${aimSettings.circleAlpha}</span>
+                            <span class="esp-slider-label">255</span>
+                        </div>
+                    </div>
+                    <div class="action-btn primary" id="aim-reset-btn"><span>Restaurar padrões</span></div>
+                </div>
+            </div>
+        </div>`;
+    }
+    // Training
+    var pctFov = ((aimSettings.trainingFov - 1) / 299 * 100).toFixed(2);
+    var pctSmooth = (aimSettings.smoothingPreview / 50 * 100).toFixed(2);
+    return `
+        <div class="category-grid compact">
+            <div class="panel">
+                <div class="panel-title">Training</div>
+                <div class="panel-body">
+                    <div class="toggle-row" data-aimtoggle="trainingOverlay"><span>Enable Training Overlay</span><div class="toggle-check ${aimToggles.trainingOverlay ? 'active' : ''}" id="toggle-trainingOverlay">${checkMarkHtml()}</div></div>
+                    <div class="toggle-row" data-aimtoggle="showFov"><span>Show Fov</span><div class="toggle-check ${aimToggles.showFov ? 'active' : ''}" id="toggle-showFov">${checkMarkHtml()}</div></div>
+                    <div class="toggle-row" data-aimtoggle="targetMarker"><span>Target Marker</span><div class="toggle-check ${aimToggles.targetMarker ? 'active' : ''}" id="toggle-targetMarker">${checkMarkHtml()}</div></div>
+                    <div class="toggle-row" data-aimtoggle="visibleCheck"><span>Visible Check (treino)</span><div class="toggle-check ${aimToggles.visibleCheck ? 'active' : ''}" id="toggle-visibleCheck">${checkMarkHtml()}</div></div>
+                    <div class="toggle-row" data-aimtoggle="excludeDeads"><span>Exclude Deads</span><div class="toggle-check ${aimToggles.excludeDeads ? 'active' : ''}" id="toggle-excludeDeads">${checkMarkHtml()}</div></div>
+                    <div class="toggle-row" data-aimtoggle="trainingNpcs"><span>Training NPCs</span><div class="toggle-check ${aimToggles.trainingNpcs ? 'active' : ''}" id="toggle-trainingNpcs">${checkMarkHtml()}</div></div>
+                    <div class="sub-label">Fov Color</div>
+                    <div class="color-row">
+                        <input type="color" id="aim-fov-color" class="color-input" value="${aimSettings.fovColor}" />
+                        <span class="color-label">Cor do FOV</span>
+                    </div>
+                    <div class="sub-label">Training Fov</div>
+                    <div class="esp-slider-wrap">
+                        <input type="range" id="aim-fov-slider" class="esp-slider" min="1" max="300" value="${aimSettings.trainingFov}" step="1" style="--slider-pct:${pctFov}%" />
+                        <div class="esp-slider-value-row">
+                            <span class="esp-slider-label">1</span>
+                            <span class="esp-slider-value" id="aim-fov-val">${aimSettings.trainingFov}</span>
+                            <span class="esp-slider-label">300</span>
+                        </div>
+                    </div>
+                    <div class="sub-label">Smoothing Preview (só visual)</div>
+                    <div class="esp-slider-wrap">
+                        <input type="range" id="aim-smooth-slider" class="esp-slider" min="0" max="50" value="${aimSettings.smoothingPreview}" step="1" style="--slider-pct:${pctSmooth}%" />
+                        <div class="esp-slider-value-row">
+                            <span class="esp-slider-label">0</span>
+                            <span class="esp-slider-value" id="aim-smooth-val">${aimSettings.smoothingPreview}</span>
+                            <span class="esp-slider-label">50</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+}
+
+function bindAimControls() {
+    contentBody.querySelectorAll('[data-aimtoggle]').forEach(function (row) {
+        row.addEventListener('mousedown', function (e) {
+            e.stopPropagation();
+            var opt = row.getAttribute('data-aimtoggle');
+            aimToggles[opt] = !aimToggles[opt];
+            var el = document.getElementById('toggle-' + opt);
+            if (el) el.classList.toggle('active', aimToggles[opt]);
+            nuiPost('aimToggle', { option: opt, enabled: aimToggles[opt] });
+        });
+    });
+    var color = document.getElementById('aim-fov-color');
+    if (color) {
+        color.value = aimSettings.fovColor;
+        color.addEventListener('input', function () {
+            aimSettings.fovColor = color.value;
+            var r = parseInt(color.value.slice(1, 3), 16);
+            var g = parseInt(color.value.slice(3, 5), 16);
+            var b = parseInt(color.value.slice(5, 7), 16);
+            nuiPost('aimSetting', { option: 'fovColor', value: { r: r, g: g, b: b } });
+        });
+        color.addEventListener('mousedown', function (e) { e.stopPropagation(); });
+    }
+    function bindSlider(id, valId, key, min, max, eventOpt) {
+        var s = document.getElementById(id);
+        var v = document.getElementById(valId);
+        if (!s) return;
+        s.value = String(aimSettings[key]);
+        syncSliderTrack(s);
+        if (v) v.textContent = String(aimSettings[key]);
+        s.addEventListener('input', function () {
+            var n = parseInt(s.value, 10);
+            aimSettings[key] = n;
+            if (v) v.textContent = String(n);
+            syncSliderTrack(s);
+            nuiPost('aimSetting', { option: eventOpt || key, value: n });
+        });
+        s.addEventListener('mousedown', function (e) { e.stopPropagation(); });
+    }
+    bindSlider('aim-fov-slider', 'aim-fov-val', 'trainingFov', 1, 300, 'trainingFov');
+    bindSlider('aim-smooth-slider', 'aim-smooth-val', 'smoothingPreview', 0, 50, 'smoothingPreview');
+    bindSlider('aim-alpha-slider', 'aim-alpha-val', 'circleAlpha', 20, 255, 'circleAlpha');
+    var reset = document.getElementById('aim-reset-btn');
+    if (reset) {
+        reset.addEventListener('mousedown', function (e) {
+            e.stopPropagation();
+            aimSettings.trainingFov = 50;
+            aimSettings.smoothingPreview = 10;
+            aimSettings.circleAlpha = 120;
+            aimSettings.fovColor = '#00c8ff';
+            aimToggles.showFov = true;
+            aimToggles.showFovCircle = true;
+            nuiPost('aimReset', {});
+            loadCategory('aim');
+        });
+    }
+}
+
+
 function loadCategory(category) {
-    // título principal oculto (espaço reservado) — não exibir nome duplicado
     if (currentCategoryLabel) {
         currentCategoryLabel.textContent = '';
         currentCategoryLabel.classList.add('is-hidden');
     }
+    renderSubnav(category);
 
     if (category === 'armas') {
         contentBody.innerHTML = renderArmas();
@@ -200,6 +394,9 @@ function loadCategory(category) {
     } else if (category === 'visual') {
         contentBody.innerHTML = renderVisual();
         bindEspControls();
+    } else if (category === 'aim') {
+        contentBody.innerHTML = renderAim();
+        bindAimControls();
     } else if (category === 'jogador') {
         contentBody.innerHTML = renderJogador();
     } else {
