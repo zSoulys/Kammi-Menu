@@ -4,6 +4,7 @@ const currentCategoryLabel = document.getElementById('current-category');
 
 const categoryNames = {
     jogador: 'Jogador',
+    visual: 'Visual',
     armas: 'Armas',
     veiculos: 'Veículos',
     players: 'Players',
@@ -41,18 +42,23 @@ function renderEmpty() {
 }
 
 function renderJogador() {
+    return renderEmpty();
+}
+
+function renderVisual() {
+    var pct = ((espDistance - 1) / (3000 - 1) * 100).toFixed(2);
     return `
-        <div class="category-grid">
+        <div class="category-grid compact">
             <div class="panel">
                 <div class="panel-title">ESP</div>
                 <div class="panel-body">
-                    <div class="toggle-row" data-esptoggle="enableEsp"><span>Enable ESP</span><div class="toggle-check ${espToggles.enableEsp ? 'active' : ''}" id="toggle-enableEsp"></div></div>
-                    <div class="toggle-row" data-esptoggle="espNames"><span>ESP Names</span><div class="toggle-check ${espToggles.espNames ? 'active' : ''}" id="toggle-espNames"></div></div>
-                    <div class="toggle-row" data-esptoggle="espHead"><span>ESP Head</span><div class="toggle-check ${espToggles.espHead ? 'active' : ''}" id="toggle-espHead"></div></div>
-                    <div class="toggle-row" data-esptoggle="espSkeleton"><span>ESP Skeleton</span><div class="toggle-check ${espToggles.espSkeleton ? 'active' : ''}" id="toggle-espSkeleton"></div></div>
-                    <div class="toggle-row" data-esptoggle="espArmorbar"><span>ESP Armorbar</span><div class="toggle-check ${espToggles.espArmorbar ? 'active' : ''}" id="toggle-espArmorbar"></div></div>
-                    <div class="toggle-row" data-esptoggle="espLines"><span>ESP Lines</span><div class="toggle-check ${espToggles.espLines ? 'active' : ''}" id="toggle-espLines"></div></div>
-                    <div class="toggle-row" data-esptoggle="espCornerBox"><span>ESP Corner Box</span><div class="toggle-check ${espToggles.espCornerBox ? 'active' : ''}" id="toggle-espCornerBox"></div></div>
+                    <div class="toggle-row" data-esptoggle="enableEsp"><span>Enable ESP</span><div class="toggle-check ${espToggles.enableEsp ? 'active' : ''}" id="toggle-enableEsp"><span class="check-mark" aria-hidden="true"><svg viewBox="0 0 12 12" width="10" height="10"><path fill="currentColor" d="M4.5 9.2L1.6 6.3l1.1-1.1 1.8 1.8 4.2-4.2 1.1 1.1z"/></svg></span></div></div>
+                    <div class="toggle-row" data-esptoggle="espNames"><span>ESP Names</span><div class="toggle-check ${espToggles.espNames ? 'active' : ''}" id="toggle-espNames"><span class="check-mark" aria-hidden="true"><svg viewBox="0 0 12 12" width="10" height="10"><path fill="currentColor" d="M4.5 9.2L1.6 6.3l1.1-1.1 1.8 1.8 4.2-4.2 1.1 1.1z"/></svg></span></div></div>
+                    <div class="toggle-row" data-esptoggle="espHead"><span>ESP Head</span><div class="toggle-check ${espToggles.espHead ? 'active' : ''}" id="toggle-espHead"><span class="check-mark" aria-hidden="true"><svg viewBox="0 0 12 12" width="10" height="10"><path fill="currentColor" d="M4.5 9.2L1.6 6.3l1.1-1.1 1.8 1.8 4.2-4.2 1.1 1.1z"/></svg></span></div></div>
+                    <div class="toggle-row" data-esptoggle="espSkeleton"><span>ESP Skeleton</span><div class="toggle-check ${espToggles.espSkeleton ? 'active' : ''}" id="toggle-espSkeleton"><span class="check-mark" aria-hidden="true"><svg viewBox="0 0 12 12" width="10" height="10"><path fill="currentColor" d="M4.5 9.2L1.6 6.3l1.1-1.1 1.8 1.8 4.2-4.2 1.1 1.1z"/></svg></span></div></div>
+                    <div class="toggle-row" data-esptoggle="espArmorbar"><span>ESP Armorbar</span><div class="toggle-check ${espToggles.espArmorbar ? 'active' : ''}" id="toggle-espArmorbar"><span class="check-mark" aria-hidden="true"><svg viewBox="0 0 12 12" width="10" height="10"><path fill="currentColor" d="M4.5 9.2L1.6 6.3l1.1-1.1 1.8 1.8 4.2-4.2 1.1 1.1z"/></svg></span></div></div>
+                    <div class="toggle-row" data-esptoggle="espLines"><span>ESP Lines</span><div class="toggle-check ${espToggles.espLines ? 'active' : ''}" id="toggle-espLines"><span class="check-mark" aria-hidden="true"><svg viewBox="0 0 12 12" width="10" height="10"><path fill="currentColor" d="M4.5 9.2L1.6 6.3l1.1-1.1 1.8 1.8 4.2-4.2 1.1 1.1z"/></svg></span></div></div>
+                    <div class="toggle-row" data-esptoggle="espCornerBox"><span>ESP Corner Box</span><div class="toggle-check ${espToggles.espCornerBox ? 'active' : ''}" id="toggle-espCornerBox"><span class="check-mark" aria-hidden="true"><svg viewBox="0 0 12 12" width="10" height="10"><path fill="currentColor" d="M4.5 9.2L1.6 6.3l1.1-1.1 1.8 1.8 4.2-4.2 1.1 1.1z"/></svg></span></div></div>
                 </div>
             </div>
             <div class="panel">
@@ -69,6 +75,7 @@ function renderJogador() {
                                 max="3000"
                                 value="${espDistance}"
                                 step="1"
+                                style="--slider-pct: ${pct}%"
                             />
                         </div>
                         <div class="esp-slider-value-row">
@@ -81,6 +88,17 @@ function renderJogador() {
             </div>
         </div>
     `;
+}
+
+function syncSliderTrack(slider) {
+    if (!slider) return;
+    var min = parseFloat(slider.min) || 0;
+    var max = parseFloat(slider.max) || 100;
+    var val = parseFloat(slider.value) || min;
+    var pct = ((val - min) / (max - min) * 100);
+    if (pct < 0) pct = 0;
+    if (pct > 100) pct = 100;
+    slider.style.setProperty('--slider-pct', pct.toFixed(2) + '%');
 }
 
 function bindEspControls() {
@@ -102,9 +120,15 @@ function bindEspControls() {
     var slider = document.getElementById('esp-distance-slider');
     var valDisplay = document.getElementById('esp-distance-val');
     if (slider) {
+        // garantir valor e track alinhados ao estado global
+        slider.value = String(espDistance);
+        syncSliderTrack(slider);
+        if (valDisplay) valDisplay.textContent = String(espDistance);
+
         slider.addEventListener('input', function () {
-            espDistance = parseInt(slider.value);
-            if (valDisplay) valDisplay.textContent = espDistance;
+            espDistance = parseInt(slider.value, 10) || 1;
+            if (valDisplay) valDisplay.textContent = String(espDistance);
+            syncSliderTrack(slider);
             window.__kammiLastAction = {
                 type: 'espSetting',
                 option: 'distance',
@@ -113,6 +137,10 @@ function bindEspControls() {
         });
         slider.addEventListener('mousedown', function (e) { e.stopPropagation(); });
         slider.addEventListener('click', function (e) { e.stopPropagation(); });
+        // reflow: corrige thumb vs track no WebKit
+        requestAnimationFrame(function () {
+            syncSliderTrack(slider);
+        });
     }
 }
 
@@ -147,9 +175,9 @@ function renderArmas() {
             <div class="panel">
                 <div class="panel-title">Modificadores</div>
                 <div class="panel-body">
-                    <div class="toggle-row" data-wtoggle="infiniteAmmo"><span>Munição Infinita</span><div class="toggle-check" id="toggle-infiniteAmmo"></div></div>
-                    <div class="toggle-row" data-wtoggle="infiniteAmmoClip"><span>Clip Infinito</span><div class="toggle-check" id="toggle-infiniteAmmoClip"></div></div>
-                    <div class="toggle-row" data-wtoggle="noReload"><span>Sem Recarregar</span><div class="toggle-check" id="toggle-noReload"></div></div>
+                    <div class="toggle-row" data-wtoggle="infiniteAmmo"><span>Munição Infinita</span><div class="toggle-check ${weaponToggles.infiniteAmmo ? 'active' : ''}" id="toggle-infiniteAmmo"><span class="check-mark" aria-hidden="true"><svg viewBox="0 0 12 12" width="10" height="10"><path fill="currentColor" d="M4.5 9.2L1.6 6.3l1.1-1.1 1.8 1.8 4.2-4.2 1.1 1.1z"/></svg></span></div></div>
+                    <div class="toggle-row" data-wtoggle="infiniteAmmoClip"><span>Clip Infinito</span><div class="toggle-check ${weaponToggles.infiniteAmmoClip ? 'active' : ''}" id="toggle-infiniteAmmoClip"><span class="check-mark" aria-hidden="true"><svg viewBox="0 0 12 12" width="10" height="10"><path fill="currentColor" d="M4.5 9.2L1.6 6.3l1.1-1.1 1.8 1.8 4.2-4.2 1.1 1.1z"/></svg></span></div></div>
+                    <div class="toggle-row" data-wtoggle="noReload"><span>Sem Recarregar</span><div class="toggle-check ${weaponToggles.noReload ? 'active' : ''}" id="toggle-noReload"><span class="check-mark" aria-hidden="true"><svg viewBox="0 0 12 12" width="10" height="10"><path fill="currentColor" d="M4.5 9.2L1.6 6.3l1.1-1.1 1.8 1.8 4.2-4.2 1.1 1.1z"/></svg></span></div></div>
                     <div class="sub-label">Extras</div>
                     <div class="action-btn" data-waction="refillAmmo"><span>Recarregar Munição Atual</span></div>
                     <div class="action-btn" data-waction="giveMaxAmmo"><span>Munição Máxima em Todas</span></div>
@@ -160,13 +188,20 @@ function renderArmas() {
 }
 
 function loadCategory(category) {
-    currentCategoryLabel.textContent = categoryNames[category] || category;
+    // título principal oculto (espaço reservado) — não exibir nome duplicado
+    if (currentCategoryLabel) {
+        currentCategoryLabel.textContent = '';
+        currentCategoryLabel.classList.add('is-hidden');
+    }
+
     if (category === 'armas') {
         contentBody.innerHTML = renderArmas();
         bindWeaponButtons();
+    } else if (category === 'visual') {
+        contentBody.innerHTML = renderVisual();
+        bindEspControls();
     } else if (category === 'jogador') {
         contentBody.innerHTML = renderJogador();
-        bindEspControls();
     } else {
         contentBody.innerHTML = renderEmpty();
     }
@@ -236,11 +271,9 @@ window.addEventListener('message', function (event) {
 
 menu.style.display = 'flex';
 
-// Live slider track fill
+// Live slider track fill (global)
 document.addEventListener('input', function(e) {
-    if (e.target && e.target.id === 'esp-distance-slider') {
-        var s = e.target;
-        var pct = ((s.value - s.min) / (s.max - s.min) * 100).toFixed(1) + '%';
-        s.style.setProperty('--slider-pct', pct);
+    if (e.target && e.target.classList && e.target.classList.contains('esp-slider')) {
+        syncSliderTrack(e.target);
     }
 });
