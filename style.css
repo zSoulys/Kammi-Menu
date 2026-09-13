@@ -453,3 +453,27 @@ html, body {
     height: 18px !important;
 }
 .nav-icon { color: #3b9eff !important; }
+
+/* v1.5.0 simple proportional icons */
+.nav-icon {
+    width: 18px !important;
+    height: 18px !important;
+    min-width: 18px !important;
+    min-height: 18px !important;
+    color: #3ecbff !important;
+    flex-shrink: 0 !important;
+    overflow: visible !important;
+}
+.nav-icon svg {
+    width: 18px !important;
+    height: 18px !important;
+    max-width: 18px !important;
+    max-height: 18px !important;
+    display: block !important;
+    flex-shrink: 0 !important;
+}
+.nav-item {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+}
