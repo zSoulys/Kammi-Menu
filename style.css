@@ -447,3 +447,9 @@ html, body {
 .nav-item.active .nav-label {
     color: #f0f0f0 !important;
 }
+/* v1.4.1 final icon sizing */
+.nav-icon, .nav-icon svg {
+    width: 18px !important;
+    height: 18px !important;
+}
+.nav-icon { color: #3b9eff !important; }
