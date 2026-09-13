@@ -97,8 +97,9 @@ html, body {
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 10px 14px;
+    padding: 10px 14px 10px 16px;
     border-radius: 8px;
+    position: relative;
     color: #e6e6e6;
     font-size: 13.5px;
     font-weight: 600;
@@ -119,7 +120,7 @@ html, body {
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    color: #e6e6e6;
+    color: #3b9eff;
 }
 
 .nav-icon svg {
@@ -130,15 +131,28 @@ html, body {
 }
 
 .nav-item:hover {
-    background: rgba(255, 255, 255, 0.07);
+    background: rgba(255, 255, 255, 0.04);
 }
 
 .nav-item.active {
-    background: rgba(255, 255, 255, 0.10);
+    background: rgba(28, 30, 34, 0.95) !important;
+    position: relative;
+    box-shadow: none;
+}
+
+.nav-item.active::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 6px;
+    bottom: 6px;
+    width: 3px;
+    border-radius: 0 3px 3px 0;
+    background: #3b9eff;
 }
 
 .nav-item.active .nav-icon {
-    color: #7adfff;
+    color: #3b9eff;
 }
 
 /* Direita 100% opaca */
