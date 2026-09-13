@@ -20,12 +20,100 @@ const weaponToggles = {
     infiniteAmmoClip: false
 };
 
+const espToggles = {
+    enableEsp: false,
+    espNames: false,
+    espHead: false,
+    espSkeleton: false,
+    espArmorbar: false,
+    espLines: false,
+    espCornerBox: false
+};
+
+let espDistance = 500;
+
 function renderEmpty() {
     return `
         <div class="empty-state">
             <p>Nenhuma função nesta categoria ainda.</p>
         </div>
     `;
+}
+
+function renderJogador() {
+    return `
+        <div class="category-grid">
+            <div class="panel">
+                <div class="panel-title">ESP</div>
+                <div class="panel-body">
+                    <div class="toggle-row" data-esptoggle="enableEsp"><span>Enable ESP</span><div class="toggle-check ${espToggles.enableEsp ? 'active' : ''}" id="toggle-enableEsp"></div></div>
+                    <div class="toggle-row" data-esptoggle="espNames"><span>ESP Names</span><div class="toggle-check ${espToggles.espNames ? 'active' : ''}" id="toggle-espNames"></div></div>
+                    <div class="toggle-row" data-esptoggle="espHead"><span>ESP Head</span><div class="toggle-check ${espToggles.espHead ? 'active' : ''}" id="toggle-espHead"></div></div>
+                    <div class="toggle-row" data-esptoggle="espSkeleton"><span>ESP Skeleton</span><div class="toggle-check ${espToggles.espSkeleton ? 'active' : ''}" id="toggle-espSkeleton"></div></div>
+                    <div class="toggle-row" data-esptoggle="espArmorbar"><span>ESP Armorbar</span><div class="toggle-check ${espToggles.espArmorbar ? 'active' : ''}" id="toggle-espArmorbar"></div></div>
+                    <div class="toggle-row" data-esptoggle="espLines"><span>ESP Lines</span><div class="toggle-check ${espToggles.espLines ? 'active' : ''}" id="toggle-espLines"></div></div>
+                    <div class="toggle-row" data-esptoggle="espCornerBox"><span>ESP Corner Box</span><div class="toggle-check ${espToggles.espCornerBox ? 'active' : ''}" id="toggle-espCornerBox"></div></div>
+                </div>
+            </div>
+            <div class="panel">
+                <div class="panel-title">ESP Settings</div>
+                <div class="panel-body">
+                    <div class="sub-label">Distance</div>
+                    <div class="esp-slider-wrap">
+                        <div class="esp-slider-row">
+                            <input
+                                type="range"
+                                id="esp-distance-slider"
+                                class="esp-slider"
+                                min="1"
+                                max="3000"
+                                value="${espDistance}"
+                                step="1"
+                            />
+                        </div>
+                        <div class="esp-slider-value-row">
+                            <span class="esp-slider-label">1</span>
+                            <span class="esp-slider-value" id="esp-distance-val">${espDistance}</span>
+                            <span class="esp-slider-label">3000</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function bindEspControls() {
+    contentBody.querySelectorAll('[data-esptoggle]').forEach(function (row) {
+        row.addEventListener('mousedown', function (e) {
+            e.stopPropagation();
+            var opt = row.getAttribute('data-esptoggle');
+            espToggles[opt] = !espToggles[opt];
+            var el = document.getElementById('toggle-' + opt);
+            if (el) el.classList.toggle('active', espToggles[opt]);
+            window.__kammiLastAction = {
+                type: 'espToggle',
+                option: opt,
+                enabled: espToggles[opt]
+            };
+        });
+    });
+
+    var slider = document.getElementById('esp-distance-slider');
+    var valDisplay = document.getElementById('esp-distance-val');
+    if (slider) {
+        slider.addEventListener('input', function () {
+            espDistance = parseInt(slider.value);
+            if (valDisplay) valDisplay.textContent = espDistance;
+            window.__kammiLastAction = {
+                type: 'espSetting',
+                option: 'distance',
+                value: espDistance
+            };
+        });
+        slider.addEventListener('mousedown', function (e) { e.stopPropagation(); });
+        slider.addEventListener('click', function (e) { e.stopPropagation(); });
+    }
 }
 
 function renderArmas() {
@@ -76,6 +164,9 @@ function loadCategory(category) {
     if (category === 'armas') {
         contentBody.innerHTML = renderArmas();
         bindWeaponButtons();
+    } else if (category === 'jogador') {
+        contentBody.innerHTML = renderJogador();
+        bindEspControls();
     } else {
         contentBody.innerHTML = renderEmpty();
     }
@@ -144,3 +235,12 @@ window.addEventListener('message', function (event) {
 });
 
 menu.style.display = 'flex';
+
+// Live slider track fill
+document.addEventListener('input', function(e) {
+    if (e.target && e.target.id === 'esp-distance-slider') {
+        var s = e.target;
+        var pct = ((s.value - s.min) / (s.max - s.min) * 100).toFixed(1) + '%';
+        s.style.setProperty('--slider-pct', pct);
+    }
+});
