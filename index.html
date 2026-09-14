@@ -4,9 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kammi</title>
-    <link rel="stylesheet" href="style.css?v=1.7.0">
+    <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="demo-mode">
+    <div class="demo-toolbar">
+        <strong>Kammi UI Demo</strong>
+        <span class="demo-badge">Standalone · sem FiveM</span>
+        <button type="button" id="demo-toggle-menu" class="demo-btn">Mostrar / Ocultar painel</button>
+        <button type="button" id="demo-notify" class="demo-btn">Testar notificação</button>
+    </div>
+    <div id="demo-notif-root" class="demo-notif-root" aria-live="polite"></div>
+
     <div id="menu" class="menu-container">
         <aside class="sidebar">
             <div class="brand">
@@ -186,6 +194,6 @@
             </div>
         </main>
     </div>
-    <script src="script.js?v=1.7.0"></script>
+    <script src="script.js"></script>
 </body>
 </html>
