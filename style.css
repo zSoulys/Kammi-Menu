@@ -713,3 +713,46 @@ html, body {
 .esp-slider-label {
     font-size: 9px !important;
 }
+
+/* === v1.7.0 Aim subnav === */
+.subnav {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+}
+.subnav.is-hidden { display: none !important; }
+.subnav-btn {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: #c8c8c8;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+.subnav-btn:hover { background: rgba(255,255,255,0.07); color: #fff; }
+.subnav-btn.active {
+    background: rgba(59,158,255,0.15);
+    border-color: rgba(59,158,255,0.35);
+    color: #7ec8ff;
+}
+.color-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 8px;
+    background: rgb(22,23,26);
+    border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.06);
+}
+.color-input {
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    padding: 0;
+}
+.color-label { color: #c8c8c8; font-size: 12px; }
